@@ -1,12 +1,13 @@
-// import {Provider} from 'react-redux';
+import Toast from 'react-native-toast-message';
+import {Provider} from 'src/context/auth-context';
 import AppNavigator from 'src/navigation';
-// import store from 'src/store';
 
 const App: React.FC = () => {
   return (
-    // <Provider store={store}>
-    <AppNavigator />
-    // </Provider>
+    <Provider>
+      <AppNavigator />
+      <Toast />
+    </Provider>
   );
 };
 

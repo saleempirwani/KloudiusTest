@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import {Fragment} from 'react';
+import {Fragment, useContext} from 'react';
 import {ScrollView, View} from 'react-native';
 import {useForm} from 'react-hook-form';
 import {z} from 'zod';
@@ -17,6 +17,7 @@ import {COLORS, STYLES} from 'src/theme';
 import {NavigationProps} from 'src/types';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {ERRORS} from 'src/labels/error';
+import {Context} from 'src/context/auth-context';
 
 const SignInSchema = z.object({
   email: z.string().email(ERRORS.enterEmail),
@@ -27,6 +28,7 @@ type SignInFormData = z.infer<typeof SignInSchema>;
 
 const SignInScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
+  const {signin} = useContext(Context);
 
   const {
     control,
@@ -46,7 +48,9 @@ const SignInScreen: React.FC = () => {
     navigation.navigate('SignUpScreen', {});
   };
 
-  const onSubmit = (data: SignInFormData) => {};
+  const onSubmit = (data: SignInFormData) => {
+    signin(data.email, data.password);
+  };
 
   return (
     <Container>

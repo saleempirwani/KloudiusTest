@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type Key = '@theme' | '@token' | '@userData';
+export type Key = '@userData';
 
 export const setToLocal = async (
   key: Key,

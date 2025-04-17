@@ -5,12 +5,16 @@ import {COLORS, HORIZON_SPACE} from 'src/theme';
 import {pixelSizeY} from 'src/utils/sizes';
 import AppText from '../AppText/AppText';
 import {removeAllFromLocal} from 'src/utils/localStorage';
+import {Context} from 'src/context/auth-context';
+import {useContext} from 'react';
 
 interface IProps {
   title?: string;
 }
 
 export default function Header({title}: IProps) {
+  const {signout} = useContext(Context);
+
   const handleLogout = () => {
     Alert.alert(
       'Logout',
@@ -24,11 +28,7 @@ export default function Header({title}: IProps) {
         {
           text: 'Yes',
           onPress: async () => {
-            await removeAllFromLocal();
-            navigationRef.reset({
-              index: 0,
-              routes: [{name: 'AuthStack'}],
-            });
+            signout();
           },
           style: 'destructive',
         },
