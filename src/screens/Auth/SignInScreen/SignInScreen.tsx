@@ -18,6 +18,7 @@ import {NavigationProps} from 'src/types';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {ERRORS} from 'src/labels/error';
 import {Context} from 'src/context/auth-context';
+import Feather from 'react-native-vector-icons/Feather';
 
 const SignInSchema = z.object({
   email: z.string().email(ERRORS.enterEmail),
@@ -70,6 +71,7 @@ const SignInScreen: React.FC = () => {
               }
               value={getValues().email}
               error={errors.email?.message}
+              SVGLeft={<Feather name="mail" size={20} />}
             />
             <Space mB={20} />
 
@@ -81,6 +83,7 @@ const SignInScreen: React.FC = () => {
               }
               value={getValues().password}
               error={errors.password?.message}
+              SVGLeft={<Feather name="lock" size={20} />}
             />
             <Space mB={10} />
 
@@ -88,7 +91,7 @@ const SignInScreen: React.FC = () => {
               title={LABELS.forgotPassword}
               variant="body2"
               alignSelf="flex-end"
-              color={COLORS.red}
+              color={COLORS.primary}
             />
             <Space mB={40} />
 

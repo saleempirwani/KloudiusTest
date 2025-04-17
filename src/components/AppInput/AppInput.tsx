@@ -4,6 +4,7 @@ import {COLORS, STYLES} from 'src/theme';
 import {IAppInputProps} from 'src/types';
 import {styles} from './styles';
 import AppText from '../AppText/AppText';
+import Feather from 'react-native-vector-icons/Feather';
 
 const AppInput: React.FC<IAppInputProps> = props => {
   const {
@@ -30,40 +31,20 @@ const AppInput: React.FC<IAppInputProps> = props => {
   };
 
   const renderRightIcon = () => {
-    return null;
-    // if (secureTextEntry) {
-    //   return (
-    //     <Icon
-    //       SVGIcon={
-    //         showPassword ? (
-    //           <SVG.EyeOpen fill={COLORS.grey} />
-    //         ) : (
-    //           <SVG.EyeClose fill={COLORS.grey} />
-    //         )
-    //       }
-    //       iconLeft={false}
-    //       onPress={onPasswordToggle}
-    //       alignSelf="center"
-    //       extraStyle={{
-    //         container: {...styles.iconCont, ...extraStyle.iconCont},
-    //       }}
-    //     />
-    //   );
-    // } else if (SVGRight) {
-    //   return (
-    //     <Icon
-    //       mR={0}
-    //       SVGIcon={SVGRight}
-    //       onPress={onPressIcon}
-    //       alignSelf="center"
-    //       extraStyle={{
-    //         container: {...styles.iconCont, ...extraStyle.iconCont},
-    //       }}
-    //     />
-    //   );
-    // } else {
-    //   return <View style={[STYLES.mR(15)]} />;
-    // }
+    if (secureTextEntry) {
+      return (
+        <Feather
+          name={showPassword ? 'eye' : 'eye-off'}
+          onPress={onPasswordToggle}
+          size={20}
+          style={[STYLES.mH(15)]}
+        />
+      );
+    } else if (SVGRight) {
+      return SVGRight;
+    } else {
+      return <View style={[STYLES.mR(15)]} />;
+    }
   };
 
   return (
@@ -76,16 +57,7 @@ const AppInput: React.FC<IAppInputProps> = props => {
           !multiline && STYLES.rowCenterBt,
           extraStyle.container,
         ]}>
-        {/* {SVGLeft && (
-        <Icon
-          SVGIcon={SVGLeft}
-          onPress={onPressIcon}
-          alignSelf="center"
-          extraStyle={{
-            container: {...styles.iconCont, ...extraStyle.iconCont},
-          }}
-        />
-      )} */}
+        {SVGLeft && <View style={[STYLES.mR(10)]}>{SVGLeft}</View>}
 
         <TextInput
           {...props}

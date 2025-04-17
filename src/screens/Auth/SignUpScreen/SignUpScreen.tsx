@@ -4,6 +4,7 @@ import {Fragment} from 'react';
 import {useForm} from 'react-hook-form';
 import {ScrollView, View} from 'react-native';
 import Toast from 'react-native-toast-message';
+import Feather from 'react-native-vector-icons/Feather';
 import {
   AppButton,
   AppInput,
@@ -81,6 +82,7 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
               value={getValues().email}
               keyboardType="email-address"
               error={errors.email?.message}
+              SVGLeft={<Feather name="mail" size={20} />}
             />
             <Space mB={20} />
 
@@ -92,6 +94,7 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
               }
               value={getValues().password}
               error={errors.password?.message}
+              SVGLeft={<Feather name="lock" size={20} />}
             />
             <Space mB={20} />
 
@@ -103,6 +106,7 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
               }
               value={getValues().confirmPassword}
               error={errors.confirmPassword?.message}
+              SVGLeft={<Feather name="lock" size={20} />}
             />
             <Space mB={40} />
 
