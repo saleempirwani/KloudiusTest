@@ -1,20 +1,38 @@
-import {useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {COLORS} from 'src/assets/theme';
-import {Container, Header, Wrapper} from 'src/common-components';
-import {IHomeScreenProps} from 'src/types/HomeScreen';
-import {NavigationProps} from 'src/types/NavigationTypes';
-import {styling} from './styles';
+import {Fragment} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {AppText, Container, Header} from 'src/components';
+import {COLORS, HORIZON_SPACE, STYLES} from 'src/theme';
+import {pixelSizeX, pixelSizeY} from 'src/utils/sizes';
 
-const HomeScreen: React.FC<IHomeScreenProps> = ({theme}) => {
-  const styles = styling(theme);
-  const navigation = useNavigation<NavigationProps>();
+interface IHomeScreenProps {}
 
+const HomeScreen: React.FC<IHomeScreenProps> = ({}) => {
   return (
-    <Container>
-      <Header menuBtn titleColor={COLORS.primary} />
+    <Container mH={false}>
+      <Fragment>
+        <Header title="Home" />
+        <View style={[STYLES.pH(HORIZON_SPACE)]}>
+          <View style={styles.list}>
+            <AppText title={`Email: ${''}`} variant="body2" />
+          </View>
+          <View style={styles.list}>
+            <AppText title={`Name: ${''}`} variant="body2" />
+          </View>
+        </View>
+      </Fragment>
     </Container>
   );
 };
 
-export default Wrapper(HomeScreen);
+export default HomeScreen;
+
+export const styles = StyleSheet.create({
+  list: {
+    backgroundColor: COLORS.leaveGreen,
+    paddingHorizontal: pixelSizeX(10),
+    paddingVertical: pixelSizeX(10),
+    borderRadius: 5,
+    marginTop: pixelSizeY(20),
+    ...STYLES.shadow,
+  },
+});

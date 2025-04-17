@@ -16,7 +16,6 @@ import {FormNameKey, NavigationProps} from 'src/types';
 export interface IForm {
   email: string;
   password: string;
-  confirmPassword?: string;
 }
 
 export interface ISignInScreenProps {}

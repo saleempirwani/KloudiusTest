@@ -1,10 +1,73 @@
-import {SafeAreaView, View} from 'react-native';
-import {HORIZON_SPACE, STYLES} from 'src/theme';
+import {Alert, SafeAreaView, StyleSheet, View} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {navigationRef} from 'src/navigation/navigationRef';
+import {COLORS, HORIZON_SPACE} from 'src/theme';
+import {pixelSizeY} from 'src/utils/sizes';
+import AppText from '../AppText/AppText';
+import {removeAllFromLocal} from 'src/utils/localStorage';
 
-export default function Header() {
+interface IProps {
+  title?: string;
+}
+
+export default function Header({title}: IProps) {
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'No',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            await removeAllFromLocal();
+            navigationRef.reset({
+              index: 0,
+              routes: [{name: 'AuthStack'}],
+            });
+          },
+          style: 'destructive',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
   return (
-    <View style={[STYLES.mH(HORIZON_SPACE)]}>
+    <View>
       <SafeAreaView />
+      {!!title && (
+        <View style={styles.container}>
+          <AppText
+            title={title}
+            variant="h2"
+            color={COLORS.black}
+            alignSelf="center"
+          />
+          <AntDesign
+            name="logout"
+            size={24}
+            color={COLORS.red}
+            onPress={handleLogout}
+          />
+        </View>
+      )}
     </View>
   );
 }
+
+export const styles = StyleSheet.create({
+  container: {
+    height: pixelSizeY(60),
+    backgroundColor: COLORS.white,
+    paddingHorizontal: HORIZON_SPACE,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    // ...STYLES.shadow,
+  },
+});
