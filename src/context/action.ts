@@ -1,8 +1,8 @@
 import Toast from 'react-native-toast-message';
-import {CREDENTIALS} from 'src/data/credentails';
 import {navigationRef} from 'src/navigation/navigationRef';
 import {
   getFromLocal,
+  removeAllFromLocal,
   removeFromLocal,
   setToLocal,
 } from 'src/utils/localStorage';
@@ -14,7 +14,18 @@ type Dispatch = (action: AuthAction) => void;
 const signin =
   (dispatch: Dispatch) =>
   async (email: string, password: string): Promise<void> => {
-    if (CREDENTIALS.email !== email || CREDENTIALS.password !== password) {
+    const users = (await getFromLocal('@users')) as any[];
+    let authenticated = false;
+    let user = null;
+
+    if (users) {
+      user = users.find(item => item.email === email);
+      if (user && user.password === password) {
+        authenticated = true;
+      }
+    }
+
+    if (!authenticated) {
       return Toast.show({
         type: 'error',
         text1: 'Wrong Credentails',
@@ -25,11 +36,37 @@ const signin =
       type: 'success',
       text1: 'Successfully Login',
     });
-    await setToLocal('@userData', CREDENTIALS);
-    dispatch({type: USER_SESSION, payload: CREDENTIALS});
+    await setToLocal('@userData', user);
+    dispatch({type: USER_SESSION, payload: user});
     navigationRef.reset({
       index: 0,
       routes: [{name: 'HomeStack'}],
+    });
+  };
+
+const signup =
+  (dispatch: Dispatch) =>
+  async (fullName: string, email: string, password: string): Promise<void> => {
+    await removeAllFromLocal();
+
+    let _users = [];
+    const users = (await getFromLocal('@users')) as any[];
+
+    if (users) {
+      _users = [...users];
+    }
+
+    _users.push({fullName, email, password});
+    await setToLocal('@users', _users);
+
+    Toast.show({
+      type: 'success',
+      text1: 'Successfully Register',
+    });
+
+    navigationRef.reset({
+      index: 0,
+      routes: [{name: 'SignInScreen'}],
     });
   };
 
@@ -55,6 +92,7 @@ const signout = (dispatch: Dispatch) => async (): Promise<void> => {
 };
 
 export default {
+  signup,
   signin,
   getUser,
   signout,

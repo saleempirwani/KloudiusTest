@@ -32,7 +32,6 @@ const SignInScreen: React.FC = () => {
   const {signin} = useContext(Context);
 
   const {
-    control,
     handleSubmit,
     formState: {errors},
     setValue,

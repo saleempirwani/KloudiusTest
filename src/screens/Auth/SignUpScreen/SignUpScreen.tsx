@@ -1,9 +1,8 @@
 import {zodResolver} from '@hookform/resolvers/zod';
 import {useNavigation} from '@react-navigation/native';
-import {Fragment} from 'react';
+import {Fragment, useContext} from 'react';
 import {useForm} from 'react-hook-form';
 import {ScrollView, View} from 'react-native';
-import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
 import {
   AppButton,
@@ -13,6 +12,7 @@ import {
   Header,
   Space,
 } from 'src/components';
+import {Context} from 'src/context/auth-context';
 import {LABELS} from 'src/labels';
 import {ERRORS} from 'src/labels/error';
 import {COLORS} from 'src/theme';
@@ -21,6 +21,7 @@ import {z} from 'zod';
 
 const SignUpSchema = z
   .object({
+    fullName: z.string().min(1, ERRORS.fullName),
     email: z.string().email(ERRORS.enterEmail),
     password: z.string().min(8, ERRORS.enterPassword),
     confirmPassword: z.string().min(8, ERRORS.confirmPassword),
@@ -35,15 +36,16 @@ interface ISignUpScreenProps {}
 
 const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
   const navigation = useNavigation<NavigationProps>();
+  const {signup} = useContext(Context);
 
   const {
-    control,
     handleSubmit,
     formState: {errors},
     setValue,
     getValues,
   } = useForm<SignUpFormData>({
     defaultValues: {
+      fullName: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -55,12 +57,8 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
     navigation.navigate('SignInScreen', {});
   };
 
-  const onSubmit = () => {
-    Toast.show({
-      type: 'success',
-      text1: 'Successfully Register',
-    });
-    navigation.navigate('SignInScreen', {});
+  const onSubmit = (data: SignUpFormData) => {
+    signup(data.fullName, data.email, data.password);
   };
 
   return (
@@ -73,6 +71,18 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
 
             <AppText title={LABELS.signUp} variant="h1" alignSelf="center" />
             <Space mB={40} />
+
+            <AppInput
+              placeholder={LABELS.fullName}
+              onChangeText={text =>
+                setValue('fullName', text, {shouldValidate: true})
+              }
+              value={getValues().fullName}
+              keyboardType="email-address"
+              error={errors.fullName?.message}
+              SVGLeft={<Feather name="user" size={20} />}
+            />
+            <Space mB={20} />
 
             <AppInput
               placeholder={LABELS.email}
