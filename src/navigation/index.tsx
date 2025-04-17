@@ -3,8 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, KeyboardAvoidingView, View} from 'react-native';
 import {Context} from 'src/context/auth-context';
-import {HomeScreen, SignInScreen} from 'src/screens';
-import SignUpScreen from 'src/screens/Auth/SignUpScreen/SignUpScreen';
+import {HomeScreen, SignInScreen, SignUpScreen} from 'src/screens';
 import {StackParamList} from 'src/types';
 import {navigationRef} from './navigationRef';
 

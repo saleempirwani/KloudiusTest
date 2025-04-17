@@ -9,22 +9,17 @@ export const COLORS = {
   transparent: 'transparent',
   black: '#000',
   white: '#fff',
-  glassBlack: 'rgba(0,0,0,0.6)',
   primary: '#368904',
-  primaryLight: 'rgba(54, 137, 4, .1)',
-  dark: '#122704',
-  bgColor: '#EFF7EF',
-  orange: '#FFB950',
   red: '#EB4040',
   redLight: 'rgba(235, 64, 64, 0.1)',
   greyGreen: '#99AE8B',
   border: '#E8F1DF',
   grey: '#BDBDBD',
-  grayGreenLight: 'rgba(54, 137, 4, 0.15)',
   leaveGreen: '#CBEEB3',
   lightGreen: '#E8F1DF',
   disabled: '#DCDCDC',
   zanah: '#E2EEDB',
+  bgColor: '#EFF7EF',
 };
 
 // Typography
@@ -175,7 +170,7 @@ export const STYLES = StyleSheet.create<any>({
   },
 
   shadow: {
-    shadowColor: COLORS.greyGreen,
+    shadowColor: COLORS.black,
     shadowOffset: {
       width: 0,
       height: 2,

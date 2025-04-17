@@ -1,13 +1,13 @@
-import {AUTH_LOADING, USER_SESSION} from './types';
-import {AuthAction} from './reducer';
+import Toast from 'react-native-toast-message';
 import {CREDENTIALS} from 'src/data/credentails';
+import {navigationRef} from 'src/navigation/navigationRef';
 import {
   getFromLocal,
   removeFromLocal,
   setToLocal,
 } from 'src/utils/localStorage';
-import Toast from 'react-native-toast-message';
-import {navigationRef} from 'src/navigation/navigationRef';
+import {AuthAction} from './reducer';
+import {USER_SESSION} from './types';
 
 type Dispatch = (action: AuthAction) => void;
 

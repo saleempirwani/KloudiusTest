@@ -1,12 +1,10 @@
+import {useContext} from 'react';
 import {Alert, SafeAreaView, StyleSheet, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {navigationRef} from 'src/navigation/navigationRef';
+import {Context} from 'src/context/auth-context';
 import {COLORS, HORIZON_SPACE} from 'src/theme';
 import {pixelSizeY} from 'src/utils/sizes';
 import AppText from '../AppText/AppText';
-import {removeAllFromLocal} from 'src/utils/localStorage';
-import {Context} from 'src/context/auth-context';
-import {useContext} from 'react';
 
 interface IProps {
   title?: string;

@@ -9,7 +9,6 @@ interface IHomeScreenProps {}
 
 const HomeScreen: React.FC<IHomeScreenProps> = ({}) => {
   const {state} = useContext(Context);
-  console.log('🚀 ~ state:', state);
 
   return (
     <Container mH={false}>

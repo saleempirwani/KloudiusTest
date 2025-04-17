@@ -1,4 +1,4 @@
-import {AUTH_LOADING, SIGN_OUT, USER_SESSION} from './types';
+import {SIGN_OUT, USER_SESSION} from './types';
 
 export interface AuthState {
   loading: boolean;
@@ -6,7 +6,6 @@ export interface AuthState {
 }
 
 export type AuthAction =
-  | {type: typeof AUTH_LOADING; payload: boolean}
   | {type: typeof USER_SESSION; payload: any}
   | {type: typeof SIGN_OUT};
 
@@ -20,12 +19,6 @@ export const authReducer = (
   action: AuthAction,
 ): AuthState => {
   switch (action.type) {
-    case AUTH_LOADING:
-      return {
-        ...state,
-        loading: action.payload,
-      };
-
     case USER_SESSION:
       return {
         ...state,

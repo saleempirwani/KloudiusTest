@@ -25,7 +25,7 @@ const AppText: React.FC<IAppTextProps> = props => {
         TYPOGRAPHY[variant],
         STYLES.fontSize(fontSize ? fontSize : TYPOGRAPHY[variant].fontSize),
         STYLES.alignSelf(alignSelf),
-        STYLES.color(color ? color : COLORS.dark),
+        STYLES.color(color || COLORS.black),
         STYLES.textAlign(textAlign),
         extraStyle,
       ]}>
