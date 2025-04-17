@@ -78,7 +78,6 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
                 setValue('fullName', text, {shouldValidate: true})
               }
               value={getValues().fullName}
-              keyboardType="email-address"
               error={errors.fullName?.message}
               SVGLeft={<Feather name="user" size={20} />}
             />
