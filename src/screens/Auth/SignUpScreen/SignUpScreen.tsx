@@ -1,6 +1,9 @@
+import {zodResolver} from '@hookform/resolvers/zod';
 import {useNavigation} from '@react-navigation/native';
-import {Fragment, useState} from 'react';
+import {Fragment} from 'react';
+import {useForm} from 'react-hook-form';
 import {ScrollView, View} from 'react-native';
+import Toast from 'react-native-toast-message';
 import {
   AppButton,
   AppInput,
@@ -10,60 +13,53 @@ import {
   Space,
 } from 'src/components';
 import {LABELS} from 'src/labels';
+import {ERRORS} from 'src/labels/error';
 import {COLORS} from 'src/theme';
-import {FormNameKey, NavigationProps} from 'src/types';
+import {NavigationProps} from 'src/types';
+import {z} from 'zod';
 
-export interface IForm {
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+const SignUpSchema = z
+  .object({
+    email: z.string().email(ERRORS.enterEmail),
+    password: z.string().min(8, ERRORS.enterPassword),
+    confirmPassword: z.string().min(8, ERRORS.confirmPassword),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: ERRORS.confirmPassword,
+  });
 
+type SignUpFormData = z.infer<typeof SignUpSchema>;
 interface ISignUpScreenProps {}
 
-const formInit: IForm = {
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
-
 const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
-  // const authState = useSelector((authState: RootState) => authState.auth);
   const navigation = useNavigation<NavigationProps>();
 
-  const [form, setForm] = useState<IForm>(formInit);
-
-  const onChangeText = (name: FormNameKey, value: string) => {
-    let _value = value;
-
-    setForm({...form, [name]: _value});
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    setValue,
+    getValues,
+  } = useForm<SignUpFormData>({
+    defaultValues: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    resolver: zodResolver(SignUpSchema),
+  });
 
   const onSignIn = () => {
     navigation.navigate('SignInScreen', {});
   };
 
-  const onSignup = () => {
-    console.debug('payload', form);
-
-    // navigation.navigate('HomeStack', {});
-
-    // if (isValidatedSignup(payload) === false) return;
-
-    // delete payload['confirmPassword'];
-
-    // const params = {
-    //   payload,
-    //   successCallback: () => {
-    //     navigation.navigate('OTPScreen', {
-    //       type: 'authentication',
-    //       email: form.email.trim(),
-    //     });
-    //   },
-    //   errorCallback: () => {},
-    // };
-
-    // dispatch(signup(params));
+  const onSubmit = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Successfully Register',
+    });
+    navigation.navigate('SignInScreen', {});
   };
 
   return (
@@ -79,33 +75,40 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
 
             <AppInput
               placeholder={LABELS.email}
-              value={form.email}
-              onChangeText={(text: string) => onChangeText('email', text)}
+              onChangeText={text =>
+                setValue('email', text, {shouldValidate: true})
+              }
+              value={getValues().email}
               keyboardType="email-address"
+              error={errors.email?.message}
             />
             <Space mB={20} />
 
             <AppInput
               secureTextEntry
               placeholder={LABELS.password}
-              value={form.password}
-              onChangeText={(text: string) => onChangeText('password', text)}
+              onChangeText={text =>
+                setValue('password', text, {shouldValidate: true})
+              }
+              value={getValues().password}
+              error={errors.password?.message}
             />
             <Space mB={20} />
 
             <AppInput
               secureTextEntry
               placeholder={LABELS.confirmPassword}
-              value={form.confirmPassword}
-              onChangeText={(text: string) =>
-                onChangeText('confirmPassword', text)
+              onChangeText={text =>
+                setValue('confirmPassword', text, {shouldValidate: true})
               }
+              value={getValues().confirmPassword}
+              error={errors.confirmPassword?.message}
             />
             <Space mB={40} />
 
             <AppButton
               title={LABELS.signUp}
-              onPress={onSignup}
+              onPress={handleSubmit(onSubmit)}
               variant="filled"
             />
             <Space mB={30} />
@@ -124,7 +127,6 @@ const SignUpScreen: React.FC<ISignUpScreenProps> = ({}) => {
           </View>
         </ScrollView>
       </Fragment>
-      {/* {authState.loading && <FullScreenLoaderModal />} */}
     </Container>
   );
 };
