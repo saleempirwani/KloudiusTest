@@ -1,8 +1,9 @@
-import {useState} from 'react';
+import {Fragment, useState} from 'react';
 import {TextInput, View} from 'react-native';
 import {COLORS, STYLES} from 'src/theme';
 import {IAppInputProps} from 'src/types';
 import {styles} from './styles';
+import AppText from '../AppText/AppText';
 
 const AppInput: React.FC<IAppInputProps> = props => {
   const {
@@ -19,6 +20,7 @@ const AppInput: React.FC<IAppInputProps> = props => {
     keyboardType = 'default',
     onChangeText = () => {},
     onPressIcon = () => {},
+    error,
   } = props;
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -65,15 +67,16 @@ const AppInput: React.FC<IAppInputProps> = props => {
   };
 
   return (
-    <View
-      style={[
-        styles.textInputCont,
-        STYLES.maxHeight(multiline ? 150 : 45),
-        STYLES.minHeight(multiline ? 150 : 45),
-        !multiline && STYLES.rowCenterBt,
-        extraStyle.container,
-      ]}>
-      {/* {SVGLeft && (
+    <Fragment>
+      <View
+        style={[
+          styles.textInputCont,
+          STYLES.maxHeight(multiline ? 150 : 45),
+          STYLES.minHeight(multiline ? 150 : 45),
+          !multiline && STYLES.rowCenterBt,
+          extraStyle.container,
+        ]}>
+        {/* {SVGLeft && (
         <Icon
           SVGIcon={SVGLeft}
           onPress={onPressIcon}
@@ -84,29 +87,38 @@ const AppInput: React.FC<IAppInputProps> = props => {
         />
       )} */}
 
-      <TextInput
-        {...props}
-        placeholder={placeholder}
-        autoFocus={autoFocus}
-        editable={editable}
-        value={value}
-        onChangeText={onChangeText}
-        multiline={multiline}
-        numberOfLines={numberOfLines}
-        autoCapitalize="none"
-        autoCorrect={false}
-        placeholderTextColor={COLORS.greyGreen}
-        selectionColor={COLORS.black}
-        keyboardType={keyboardType}
-        style={[
-          styles.textInput,
-          STYLES.pT(multiline ? 15 : 0),
-          extraStyle.textInput,
-        ]}
-        {...(secureTextEntry && {secureTextEntry: !showPassword})}
-      />
-      {renderRightIcon()}
-    </View>
+        <TextInput
+          {...props}
+          placeholder={placeholder}
+          autoFocus={autoFocus}
+          editable={editable}
+          value={value}
+          onChangeText={onChangeText}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholderTextColor={COLORS.greyGreen}
+          selectionColor={COLORS.black}
+          keyboardType={keyboardType}
+          style={[
+            styles.textInput,
+            STYLES.pT(multiline ? 15 : 0),
+            extraStyle.textInput,
+          ]}
+          {...(secureTextEntry && {secureTextEntry: !showPassword})}
+        />
+        {renderRightIcon()}
+      </View>
+      {error && (
+        <AppText
+          title={error}
+          variant="body3"
+          color={COLORS.red}
+          extraStyle={[STYLES.mT(5)]}
+        />
+      )}
+    </Fragment>
   );
 };
 

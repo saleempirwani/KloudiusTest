@@ -84,6 +84,7 @@ export interface IAppInputProps {
   numberOfLines?: number;
   secureTextEntry?: boolean;
   extraStyle?: IExtraStyle;
+  error?: string;
   keyboardType?:
     | 'default'
     | 'number-pad'

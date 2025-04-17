@@ -53,7 +53,7 @@ const RootNavigator = ({navStack}: {navStack: keyof StackParamList}) => {
 };
 
 export default function AppNavigator() {
-  const [navStack, setNavStack] = useState<keyof StackParamList>('HomeStack');
+  const [navStack, setNavStack] = useState<keyof StackParamList>('AuthStack');
 
   const checkAuth = () => {
     const params = {

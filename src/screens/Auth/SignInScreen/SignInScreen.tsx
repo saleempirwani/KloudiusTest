@@ -1,6 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
-import {Fragment, useState} from 'react';
+import {Fragment} from 'react';
 import {ScrollView, View} from 'react-native';
+import {useForm} from 'react-hook-form';
+import {z} from 'zod';
+
 import {
   AppButton,
   AppInput,
@@ -11,67 +14,39 @@ import {
 } from 'src/components';
 import {LABELS} from 'src/labels';
 import {COLORS, STYLES} from 'src/theme';
-import {FormNameKey, NavigationProps} from 'src/types';
+import {NavigationProps} from 'src/types';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {ERRORS} from 'src/labels/error';
 
-export interface IForm {
-  email: string;
-  password: string;
-}
+const SignInSchema = z.object({
+  email: z.string().email(ERRORS.enterEmail),
+  password: z.string().min(8, ERRORS.enterPassword),
+});
 
-export interface ISignInScreenProps {}
+type SignInFormData = z.infer<typeof SignInSchema>;
 
-const formInit: IForm = {
-  email: '',
-  password: '',
-};
-
-const SignInScreen: React.FC<ISignInScreenProps> = props => {
-  // const authState = useSelector((authState: RootState) => authState.auth);
+const SignInScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProps>();
 
-  const [form, setForm] = useState<IForm>(formInit);
-
-  const onChangeText = (name: FormNameKey, value: string) => {
-    setForm({...form, [name]: value});
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+    setValue,
+    getValues,
+  } = useForm<SignInFormData>({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    resolver: zodResolver(SignInSchema),
+  });
 
   const onSignUp = () => {
     navigation.navigate('SignUpScreen', {});
   };
 
-  const onForgotPress = () => {
-    // navigation.navigate('ForgotPasswordScreen', {});
-  };
-
-  const onSignin = () => {
-    if (!form.email) return alert('Please enter email');
-
-    console.debug('payload', form);
-
-    // resetStack('HomeStack', 'VerifyPasswordScreen');
-
-    // const successCallback = (response: IDynamicObject) => {
-    //   if (response.data.is_email_verified === false) {
-    //     navigation.navigate('OTPScreen', {
-    //       email: payload.email,
-    //       type: 'authentication',
-    //     });
-    //     Toast(response.message);
-    //     return;
-    //   }
-    //   resetStack('HomeStack', 'BottomTabs');
-    // };
-
-    // if (isValidatedSignin(payload) === false) return;
-
-    // const params = {
-    //   payload,
-    //   successCallback,
-    //   errorCallback: () => {},
-    // };
-
-    // dispatch(signin(params));
-  };
+  const onSubmit = (data: SignInFormData) => {};
 
   return (
     <Container>
@@ -80,23 +55,28 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
         <ScrollView showsVerticalScrollIndicator={false} style={[STYLES.flex1]}>
           <View>
             <Space mT={40} />
-
             <AppText variant="h1" title={LABELS.signIn} alignSelf="center" />
             <Space mB={40} />
 
             <AppInput
               placeholder={LABELS.email}
-              value={form.email}
-              onChangeText={(text: string) => onChangeText('email', text)}
               keyboardType="email-address"
+              onChangeText={text =>
+                setValue('email', text, {shouldValidate: true})
+              }
+              value={getValues().email}
+              error={errors.email?.message}
             />
             <Space mB={20} />
 
             <AppInput
               secureTextEntry
               placeholder={LABELS.password}
-              value={form.password}
-              onChangeText={(text: string) => onChangeText('password', text)}
+              onChangeText={text =>
+                setValue('password', text, {shouldValidate: true})
+              }
+              value={getValues().password}
+              error={errors.password?.message}
             />
             <Space mB={10} />
 
@@ -104,14 +84,13 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
               title={LABELS.forgotPassword}
               variant="body2"
               alignSelf="flex-end"
-              onPress={onForgotPress}
               color={COLORS.red}
             />
             <Space mB={40} />
 
             <AppButton
               title={LABELS.signIn}
-              onPress={onSignin}
+              onPress={handleSubmit(onSubmit)}
               variant="filled"
             />
             <Space mB={25} />
@@ -121,7 +100,7 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
               variant="body1"
               alignSelf="center">
               <AppText
-                title={LABELS.signUp}
+                title={` ${LABELS.signUp}`}
                 variant="body1"
                 onPress={onSignUp}
                 color={COLORS.primary}
@@ -129,7 +108,6 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
             </AppText>
           </View>
         </ScrollView>
-        {/* {authState.loading && <FullScreenLoaderModal />} */}
       </Fragment>
     </Container>
   );
