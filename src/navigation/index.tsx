@@ -2,16 +2,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useContext, useEffect, useState} from 'react';
 import {ActivityIndicator, KeyboardAvoidingView, View} from 'react-native';
-// import {COLORS, STYLES} from 'src/assets/theme';
-import {HomeScreen, SignInScreen} from 'src/screens';
-// import {dispatch} from 'src/store';
-// import {userSession} from 'src/store/slices/authSlice';
 import {Context} from 'src/context/auth-context';
+import {HomeScreen, SignInScreen} from 'src/screens';
 import SignUpScreen from 'src/screens/Auth/SignUpScreen/SignUpScreen';
 import {StackParamList} from 'src/types';
 import {navigationRef} from './navigationRef';
-import {Text} from 'react-native';
-import {STYLES} from 'src/theme';
 
 const Stack = createNativeStackNavigator<StackParamList>();
 
@@ -64,7 +59,7 @@ export default function AppNavigator() {
       getUser((stack: any) => {
         setNavStack(stack);
       });
-    }, 1000);
+    }, 300);
   }, []);
 
   if (navStack) {
