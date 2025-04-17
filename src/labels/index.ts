@@ -11,7 +11,7 @@ export const LABELS = {
   signIn: 'Sign in',
   signUp: 'Sign up',
   enterNewPassword: 'Enter New Password',
-  forgotPassword: 'forgot password?',
+  forgotPassword: 'Forgot password?',
   forgotPassword2: 'Forgot Password?',
   dontHaveAccount: "Don't have an account? ",
   haveAccount: 'Already have an account? ',

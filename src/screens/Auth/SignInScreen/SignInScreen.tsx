@@ -45,6 +45,8 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
   };
 
   const onSignin = () => {
+    if (!form.email) return alert('Please enter email');
+
     console.debug('payload', form);
 
     // resetStack('HomeStack', 'VerifyPasswordScreen');
@@ -78,6 +80,8 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
         <Header />
         <ScrollView showsVerticalScrollIndicator={false} style={[STYLES.flex1]}>
           <View>
+            <Space mT={40} />
+
             <AppText variant="h1" title={LABELS.signIn} alignSelf="center" />
             <Space mB={40} />
 
@@ -99,7 +103,7 @@ const SignInScreen: React.FC<ISignInScreenProps> = props => {
 
             <AppText
               title={LABELS.forgotPassword}
-              variant="h5"
+              variant="body2"
               alignSelf="flex-end"
               onPress={onForgotPress}
               color={COLORS.red}
