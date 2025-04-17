@@ -21,8 +21,8 @@ import {Context} from 'src/context/auth-context';
 import Feather from 'react-native-vector-icons/Feather';
 
 const SignInSchema = z.object({
-  email: z.string().email(ERRORS.enterEmail),
-  password: z.string().min(8, ERRORS.enterPassword),
+  email: z.string().min(1, ERRORS.enterEmail).email(ERRORS.emailFormat),
+  password: z.string().min(6, ERRORS.passFormat),
 });
 
 type SignInFormData = z.infer<typeof SignInSchema>;

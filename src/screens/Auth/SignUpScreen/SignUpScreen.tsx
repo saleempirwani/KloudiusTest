@@ -22,9 +22,9 @@ import {z} from 'zod';
 const SignUpSchema = z
   .object({
     fullName: z.string().min(1, ERRORS.fullName),
-    email: z.string().email(ERRORS.enterEmail),
-    password: z.string().min(8, ERRORS.enterPassword),
-    confirmPassword: z.string().min(8, ERRORS.confirmPassword),
+    email: z.string().min(1, ERRORS.enterEmail).email(ERRORS.emailFormat),
+    password: z.string().min(6, ERRORS.enterPassword),
+    confirmPassword: z.string().min(6, ERRORS.confirmPassword),
   })
   .refine(data => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
