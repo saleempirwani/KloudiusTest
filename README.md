@@ -545,7 +545,7 @@ flexDirection: 'row',
 const signup =
 (dispatch: Dispatch) =>
 async (fullName: string, email: string, password: string): Promise<void> => {
-let \_users = [];
+let _users = [];
 const users = (await getFromLocal('@users')) as any[];
 
     if (users) {
@@ -657,17 +657,5 @@ dispatch({type: USER_SESSION, payload: userData});
 callback('AuthStack');
 }
 };
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
 
 ```
