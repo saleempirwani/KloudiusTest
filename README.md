@@ -370,6 +370,140 @@ const navigation = useNavigation<NavigationProps>();
   );
 ```
 
+### Home Screen
+
+- In Home Screen I showed `logged-in` user details like `name, email`
+
+```
+import {Fragment, useContext} from 'react';
+import {StyleSheet, View} from 'react-native';
+import {AppText, Container, Header} from 'src/components';
+import {Context} from 'src/context/auth-context';
+import {COLORS, HORIZON_SPACE, STYLES} from 'src/theme';
+import {pixelSizeX, pixelSizeY} from 'src/utils/sizes';
+
+interface IHomeScreenProps {}
+
+const HomeScreen: React.FC<IHomeScreenProps> = ({}) => {
+  const {state} = useContext(Context);
+
+  return (
+    <Container mH={false}>
+      <Fragment>
+        <Header title="Home" />
+        <View style={[STYLES.pH(HORIZON_SPACE)]}>
+          <View style={styles.list}>
+            <AppText
+              title={`Name: ${state?.userData?.fullName}`}
+              variant="body2"
+            />
+          </View>
+          <View style={styles.list}>
+            <AppText
+              title={`Email: ${state?.userData?.email}`}
+              variant="body2"
+            />
+          </View>
+        </View>
+      </Fragment>
+    </Container>
+  );
+};
+
+export default HomeScreen;
+
+export const styles = StyleSheet.create({
+  list: {
+    backgroundColor: COLORS.leaveGreen,
+    paddingHorizontal: pixelSizeX(10),
+    paddingVertical: pixelSizeX(10),
+    borderRadius: 5,
+    marginTop: pixelSizeY(20),
+    ...STYLES.shadow,
+  },
+});
+```
+
+### Header Component
+
+- This is the Header Component where I showed `Home` label and `Logout Icon`
+- When user click on `logout icon` it will ask for confirmation then call `signout` function
+
+```
+import {useContext} from 'react';
+import {Alert, SafeAreaView, StyleSheet, View} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {Context} from 'src/context/auth-context';
+import {COLORS, HORIZON_SPACE} from 'src/theme';
+import {pixelSizeY} from 'src/utils/sizes';
+import AppText from '../AppText/AppText';
+
+interface IProps {
+  title?: string;
+}
+
+export default function Header({title}: IProps) {
+  const {signout} = useContext(Context);
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'No',
+          onPress: () => {},
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            signout();
+          },
+          style: 'destructive',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
+  return (
+    <View>
+      <SafeAreaView />
+      {!!title && (
+        <View style={styles.container}>
+          <AppText
+            title={title}
+            variant="h2"
+            color={COLORS.black}
+            alignSelf="center"
+          />
+          <AntDesign
+            name="logout"
+            size={24}
+            color={COLORS.red}
+            onPress={handleLogout}
+          />
+        </View>
+      )}
+    </View>
+  );
+}
+
+export const styles = StyleSheet.create({
+  container: {
+    height: pixelSizeY(60),
+    backgroundColor: COLORS.white,
+    paddingHorizontal: HORIZON_SPACE,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    // ...STYLES.shadow,
+  },
+});
+
+```
+
 ### Context API
 
 #### Actions File
