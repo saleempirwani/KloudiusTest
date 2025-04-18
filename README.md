@@ -2,6 +2,10 @@
 
 ### App.ts file
 
+- Provider Component: for Context API, State Management.
+- AppNavigator Component: for controll all navigation stacks.
+- Toast Component: for showing error and success messages.
+
 ```
 import Toast from 'react-native-toast-message';
 import {Provider} from 'src/context/auth-context';
@@ -19,11 +23,9 @@ const App: React.FC = () => {
 export default App;
 ```
 
-- Provider Component: for Context API, State Management.
-- AppNavigator Component: for controll all navigation stacks.
-- Toast Component: for showing error and success messages.
-
 ### AppNavigator Component (src/navigation/index.tsx)
+
+- AuthStack: It is a stack to control/support auth screens like SignInScreen, SignUpScreen or ForgotScreen (if any)
 
 ```
 const AuthStack = () => {
@@ -42,7 +44,11 @@ const AuthStack = () => {
     </Stack.Navigator>
   );
 };
+```
 
+- HomeStack: It is a stack to control/support screens after authentication like HomeScreen, ProfileScreen or other.
+
+```
 const HomeStack = () => {
   return (
     <Stack.Navigator id={undefined}>
@@ -54,8 +60,11 @@ const HomeStack = () => {
     </Stack.Navigator>
   );
 };
+```
 
+- RootNavigator: To control all Stacks (AuthStack, HomeStack or other.)
 
+```
 const RootNavigator = ({navStack}: {navStack: keyof StackParamList}) => {
   return (
     <Stack.Navigator initialRouteName={navStack} id={undefined}>
@@ -67,11 +76,9 @@ const RootNavigator = ({navStack}: {navStack: keyof StackParamList}) => {
 
 ```
 
-- AuthStack: It is a stack to control/support auth screens like SignInScreen, SignUpScreen or ForgotScreen (if any)
-
-- HomeStack: It is a stack to control/support screens after authentication like HomeScreen, ProfileScreen or other.
-
-- RootNavigator: To control all Stacks (AuthStack, HomeStack or other.)
+- AppNavigator: it is main default exported function that controls complete app screens navigations.
+- I have check first from `getUser` function, if user is save in `async storage`, if yes then set HomeStack otherwise AuthStack.
+- While checking it will show `Loading`.
 
 ```
 export default function AppNavigator() {
@@ -104,10 +111,6 @@ export default function AppNavigator() {
 }
 ```
 
-- AppNavigator: it is main default exported function that controls complete app screens navigations.
-- I have check first from `getUser` function, if user is save in `async storage`, if yes then set HomeStack otherwise AuthStack.
-- While checking it will show `Loading`.
-
 ### SignInScreen File
 
 #### Validation Schema
@@ -115,12 +118,14 @@ export default function AppNavigator() {
 - This is the schema file, where I created a schema for input validations
 
 ```
+
 const SignInSchema = z.object({
-  email: z.string().min(1, ERRORS.enterEmail).email(ERRORS.emailFormat),
-  password: z.string().min(6, ERRORS.passFormat),
+email: z.string().min(1, ERRORS.enterEmail).email(ERRORS.emailFormat),
+password: z.string().min(6, ERRORS.passFormat),
 });
 
 type SignInFormData = z.infer<typeof SignInSchema>;
+
 ```
 
 #### Initialization of Schema and Submit Functions
@@ -129,29 +134,31 @@ type SignInFormData = z.infer<typeof SignInSchema>;
 - `signin(data.email, data.password);` this is a context API function to check credentails
 
 ```
-  const navigation = useNavigation<NavigationProps>();
-  const {signin} = useContext(Context);
 
-  const {
-    handleSubmit,
-    formState: {errors},
-    setValue,
-    getValues,
-  } = useForm<SignInFormData>({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-    resolver: zodResolver(SignInSchema),
-  });
+const navigation = useNavigation<NavigationProps>();
+const {signin} = useContext(Context);
 
-  const onSignUp = () => {
-    navigation.navigate('SignUpScreen', {});
-  };
+const {
+handleSubmit,
+formState: {errors},
+setValue,
+getValues,
+} = useForm<SignInFormData>({
+defaultValues: {
+email: '',
+password: '',
+},
+resolver: zodResolver(SignInSchema),
+});
 
-  const onSubmit = (data: SignInFormData) => {
-    signin(data.email, data.password);
-  };
+const onSignUp = () => {
+navigation.navigate('SignUpScreen', {});
+};
+
+const onSubmit = (data: SignInFormData) => {
+signin(data.email, data.password);
+};
+
 ```
 
 #### Rendering UI
@@ -159,15 +166,17 @@ type SignInFormData = z.infer<typeof SignInSchema>;
 - I have add components for sign-in for like `Input`, `Button` and other.
 
 ```
-  return (
-    <Container>
-      <Fragment>
-        <Header />
-        <ScrollView showsVerticalScrollIndicator={false} style={[STYLES.flex1]}>
-          <View>
-            <Space mT={40} />
-            <AppText variant="h1" title={LABELS.signIn} alignSelf="center" />
-            <Space mB={40} />
+
+return (
+<Container>
+<Fragment>
+
+<Header />
+<ScrollView showsVerticalScrollIndicator={false} style={[STYLES.flex1]}>
+<View>
+<Space mT={40} />
+<AppText variant="h1" title={LABELS.signIn} alignSelf="center" />
+<Space mB={40} />
 
             <AppInput
               placeholder={LABELS.email}
@@ -223,7 +232,9 @@ type SignInFormData = z.infer<typeof SignInSchema>;
         </ScrollView>
       </Fragment>
     </Container>
-  );
+
+);
+
 ```
 
 ### SignUpScreen File
@@ -233,20 +244,22 @@ type SignInFormData = z.infer<typeof SignInSchema>;
 - This is the schema file, where I created a schema for input validations
 
 ```
+
 const SignUpSchema = z
-  .object({
-    fullName: z.string().min(1, ERRORS.fullName),
-    email: z.string().min(1, ERRORS.enterEmail).email(ERRORS.emailFormat),
-    password: z.string().min(6, ERRORS.enterPassword),
-    confirmPassword: z.string().min(6, ERRORS.confirmPassword),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: ERRORS.confirmPassword,
-  });
+.object({
+fullName: z.string().min(1, ERRORS.fullName),
+email: z.string().min(1, ERRORS.enterEmail).email(ERRORS.emailFormat),
+password: z.string().min(6, ERRORS.enterPassword),
+confirmPassword: z.string().min(6, ERRORS.confirmPassword),
+})
+.refine(data => data.password === data.confirmPassword, {
+path: ['confirmPassword'],
+message: ERRORS.confirmPassword,
+});
 
 type SignUpFormData = z.infer<typeof SignUpSchema>;
 interface ISignUpScreenProps {}
+
 ```
 
 #### Initialization of Schema and Submit Functions
@@ -255,31 +268,33 @@ interface ISignUpScreenProps {}
 - `signup(data.fullName, data.email, data.password);` this is a context API function to register user.
 
 ```
+
 const navigation = useNavigation<NavigationProps>();
-  const {signup} = useContext(Context);
+const {signup} = useContext(Context);
 
-  const {
-    handleSubmit,
-    formState: {errors},
-    setValue,
-    getValues,
-  } = useForm<SignUpFormData>({
-    defaultValues: {
-      fullName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-    },
-    resolver: zodResolver(SignUpSchema),
-  });
+const {
+handleSubmit,
+formState: {errors},
+setValue,
+getValues,
+} = useForm<SignUpFormData>({
+defaultValues: {
+fullName: '',
+email: '',
+password: '',
+confirmPassword: '',
+},
+resolver: zodResolver(SignUpSchema),
+});
 
-  const onSignIn = () => {
-    navigation.navigate('SignInScreen', {});
-  };
+const onSignIn = () => {
+navigation.navigate('SignInScreen', {});
+};
 
-  const onSubmit = (data: SignUpFormData) => {
-    signup(data.fullName, data.email, data.password);
-  };
+const onSubmit = (data: SignUpFormData) => {
+signup(data.fullName, data.email, data.password);
+};
+
 ```
 
 #### Rendering UI
@@ -287,13 +302,15 @@ const navigation = useNavigation<NavigationProps>();
 - I have add components for sign-in for like `Input`, `Button` and other.
 
 ```
-  return (
-    <Container>
-      <Fragment>
-        <Header />
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View>
-            <Space mT={40} />
+
+return (
+<Container>
+<Fragment>
+
+<Header />
+<ScrollView showsVerticalScrollIndicator={false}>
+<View>
+<Space mT={40} />
 
             <AppText title={LABELS.signUp} variant="h1" alignSelf="center" />
             <Space mB={40} />
@@ -367,7 +384,9 @@ const navigation = useNavigation<NavigationProps>();
         </ScrollView>
       </Fragment>
     </Container>
-  );
+
+);
+
 ```
 
 ### Home Screen
@@ -375,6 +394,7 @@ const navigation = useNavigation<NavigationProps>();
 - In Home Screen I showed `logged-in` user details like `name, email`
 
 ```
+
 import {Fragment, useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {AppText, Container, Header} from 'src/components';
@@ -385,43 +405,45 @@ import {pixelSizeX, pixelSizeY} from 'src/utils/sizes';
 interface IHomeScreenProps {}
 
 const HomeScreen: React.FC<IHomeScreenProps> = ({}) => {
-  const {state} = useContext(Context);
+const {state} = useContext(Context);
 
-  return (
-    <Container mH={false}>
-      <Fragment>
-        <Header title="Home" />
-        <View style={[STYLES.pH(HORIZON_SPACE)]}>
-          <View style={styles.list}>
-            <AppText
-              title={`Name: ${state?.userData?.fullName}`}
-              variant="body2"
-            />
-          </View>
-          <View style={styles.list}>
-            <AppText
-              title={`Email: ${state?.userData?.email}`}
-              variant="body2"
-            />
-          </View>
-        </View>
-      </Fragment>
-    </Container>
-  );
+return (
+<Container mH={false}>
+<Fragment>
+
+<Header title="Home" />
+<View style={[STYLES.pH(HORIZON_SPACE)]}>
+<View style={styles.list}>
+<AppText
+title={`Name: ${state?.userData?.fullName}`}
+variant="body2"
+/>
+</View>
+<View style={styles.list}>
+<AppText
+title={`Email: ${state?.userData?.email}`}
+variant="body2"
+/>
+</View>
+</View>
+</Fragment>
+</Container>
+);
 };
 
 export default HomeScreen;
 
 export const styles = StyleSheet.create({
-  list: {
-    backgroundColor: COLORS.leaveGreen,
-    paddingHorizontal: pixelSizeX(10),
-    paddingVertical: pixelSizeX(10),
-    borderRadius: 5,
-    marginTop: pixelSizeY(20),
-    ...STYLES.shadow,
-  },
+list: {
+backgroundColor: COLORS.leaveGreen,
+paddingHorizontal: pixelSizeX(10),
+paddingVertical: pixelSizeX(10),
+borderRadius: 5,
+marginTop: pixelSizeY(20),
+...STYLES.shadow,
+},
 });
+
 ```
 
 ### Header Component
@@ -430,6 +452,7 @@ export const styles = StyleSheet.create({
 - When user click on `logout icon` it will ask for confirmation then call `signout` function
 
 ```
+
 import {useContext} from 'react';
 import {Alert, SafeAreaView, StyleSheet, View} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -439,67 +462,67 @@ import {pixelSizeY} from 'src/utils/sizes';
 import AppText from '../AppText/AppText';
 
 interface IProps {
-  title?: string;
+title?: string;
 }
 
 export default function Header({title}: IProps) {
-  const {signout} = useContext(Context);
+const {signout} = useContext(Context);
 
-  const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        {
-          text: 'No',
-          onPress: () => {},
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: async () => {
-            signout();
-          },
-          style: 'destructive',
-        },
-      ],
-      {cancelable: true},
-    );
-  };
+const handleLogout = () => {
+Alert.alert(
+'Logout',
+'Are you sure you want to logout?',
+[
+{
+text: 'No',
+onPress: () => {},
+style: 'cancel',
+},
+{
+text: 'Yes',
+onPress: async () => {
+signout();
+},
+style: 'destructive',
+},
+],
+{cancelable: true},
+);
+};
 
-  return (
-    <View>
-      <SafeAreaView />
-      {!!title && (
-        <View style={styles.container}>
-          <AppText
+return (
+<View>
+<SafeAreaView />
+{!!title && (
+<View style={styles.container}>
+<AppText
             title={title}
             variant="h2"
             color={COLORS.black}
             alignSelf="center"
           />
-          <AntDesign
+<AntDesign
             name="logout"
             size={24}
             color={COLORS.red}
             onPress={handleLogout}
           />
-        </View>
-      )}
-    </View>
-  );
+</View>
+)}
+</View>
+);
 }
 
 export const styles = StyleSheet.create({
-  container: {
-    height: pixelSizeY(60),
-    backgroundColor: COLORS.white,
-    paddingHorizontal: HORIZON_SPACE,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-    // ...STYLES.shadow,
-  },
+container: {
+height: pixelSizeY(60),
+backgroundColor: COLORS.white,
+paddingHorizontal: HORIZON_SPACE,
+justifyContent: 'space-between',
+alignItems: 'center',
+flexDirection: 'row',
+// ...STYLES.shadow,
+},
 });
 
 ```
@@ -520,10 +543,10 @@ export const styles = StyleSheet.create({
 ```
 
 const signup =
-  (dispatch: Dispatch) =>
-  async (fullName: string, email: string, password: string): Promise<void> => {
-    let _users = [];
-    const users = (await getFromLocal('@users')) as any[];
+(dispatch: Dispatch) =>
+async (fullName: string, email: string, password: string): Promise<void> => {
+let \_users = [];
+const users = (await getFromLocal('@users')) as any[];
 
     if (users) {
       const userAlreadyExist = users?.find(item => item.email === email);
@@ -548,7 +571,8 @@ const signup =
       index: 0,
       routes: [{name: 'SignInScreen'}],
     });
-  };
+
+};
 
 ```
 
@@ -561,12 +585,13 @@ const signup =
 5.  If found then saving user to `async storage`, returning `success message` and navigate to `HomeStack => HomeScreen`.
 
 ```
+
 const signin =
-  (dispatch: Dispatch) =>
-  async (email: string, password: string): Promise<void> => {
-    const users = (await getFromLocal('@users')) as any[];
-    let authenticated = false;
-    let user = null;
+(dispatch: Dispatch) =>
+async (email: string, password: string): Promise<void> => {
+const users = (await getFromLocal('@users')) as any[];
+let authenticated = false;
+let user = null;
 
     if (users) {
       user = users.find(item => item.email === email);
@@ -592,7 +617,9 @@ const signin =
       index: 0,
       routes: [{name: 'HomeStack'}],
     });
-  };
+
+};
+
 ```
 
 ##### Signout Function
@@ -600,14 +627,16 @@ const signin =
 - Removing current user from `async storage` and `context` and navigating user to `AuthStack => AuthScreen`
 
 ```
+
 const signout = (dispatch: Dispatch) => async (): Promise<void> => {
-  await removeFromLocal('@userData');
-  dispatch({type: USER_SESSION, payload: null});
-  navigationRef.reset({
-    index: 0,
-    routes: [{name: 'AuthStack'}],
-  });
+await removeFromLocal('@userData');
+dispatch({type: USER_SESSION, payload: null});
+navigationRef.reset({
+index: 0,
+routes: [{name: 'AuthStack'}],
+});
 };
+
 ```
 
 ##### getUser Function
@@ -616,15 +645,29 @@ const signout = (dispatch: Dispatch) => async (): Promise<void> => {
 - If user not found then navigation to `AuthStack`
 
 ```
+
 const getUser =
-  (dispatch: Dispatch) =>
-  async (callback = (e: any) => {}): Promise<void> => {
-    const userData = await getFromLocal('@userData');
-    if (userData) {
-      callback('HomeStack');
-      dispatch({type: USER_SESSION, payload: userData});
-    } else {
-      callback('AuthStack');
-    }
-  };
+(dispatch: Dispatch) =>
+async (callback = (e: any) => {}): Promise<void> => {
+const userData = await getFromLocal('@userData');
+if (userData) {
+callback('HomeStack');
+dispatch({type: USER_SESSION, payload: userData});
+} else {
+callback('AuthStack');
+}
+};
+
+```
+
+```
+
+```
+
+```
+
+```
+
+```
+
 ```
