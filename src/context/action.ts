@@ -2,7 +2,6 @@ import Toast from 'react-native-toast-message';
 import {navigationRef} from 'src/navigation/navigationRef';
 import {
   getFromLocal,
-  removeAllFromLocal,
   removeFromLocal,
   setToLocal,
 } from 'src/utils/localStorage';
@@ -47,12 +46,17 @@ const signin =
 const signup =
   (dispatch: Dispatch) =>
   async (fullName: string, email: string, password: string): Promise<void> => {
-    await removeAllFromLocal();
-
     let _users = [];
     const users = (await getFromLocal('@users')) as any[];
 
     if (users) {
+      const userAlreadyExist = users?.find(item => item.email === email);
+      if (userAlreadyExist)
+        return Toast.show({
+          type: 'error',
+          text1: 'Email already exist',
+        });
+
       _users = [...users];
     }
 
